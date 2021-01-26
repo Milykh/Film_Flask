@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+<h1 class="text-center">добавление рецензии</h1>
+
+<form method="POST" class="w-50 mx-auto mt-5">
+
+
+  <!--
+5 – отлично (значение по умолчанию),
+4 – хорошо,
+3 – удовлетворительно,
+2 – неудовлетворительно,
+1 – плохо,
+0 – ужасно.
+
+
+  -->
+
+
+
+    <div class="form-group">
+        <label for="mark">оценка</label>
+        <select class="form-control" id="mark"name="mark">
+            <option>отлично</option>
+          <option>хорошо</option>
+          <option>удовлетворительно</option>
+          <option>неудовлетворительно</option>
+          <option>плохо</option>
+          <option>ужасно</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="text_r">Рецензия</label>
+        <textarea class="form-control" id="text_r" rows="10"type="text_r" name="text_r"></textarea>
+      </div>
+    
+        <div class = "form-group row">
+          
+        <input type="submit" class = "btn btn-primary"value="Сохранить">
+        
+    </div>
+
+</form>
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}

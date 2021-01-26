@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+<!-- подключаем для скрипта -->
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
+rossorigin="anonymous"></script>
+
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Удаление фильма</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            Вы уверены, что хотите удалить фильм {{film_del.name_film}} ?
+
+            
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+          <!--<button type="button" class="btn btn-primary">Удалить</button>-->
+          <a class="btn btn-danger" href="{{url_for('delete',delete=film_del.id_film)}}">удалить</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+<!-- распарсиваем из обекта users-->
+<h1  class="text-center">база фильмов</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+          
+            <th>№</th>
+            <th>название фильма</th>
+            <th>жанр</th>
+            <th>год</th>
+            <th>кол рецензий</th>
+            
+            <th>просмотр</th>
+            
+            <th>удаление</th>
+            
+            
+            <th>редактирование</th>
+            
+        </tr>
+        
+    </thead> 
+    <tbody>
+        {%for user in users.items%}
+        <tr>
+          
+            <td>{{user.id_page}}</td>
+            <td>{{user.name_film}}</td>
+            <td>{{user.name_g}}</td>
+            <td>{{user.year_film}}</td>
+            <td>{{user.count_rev}}</td>
+            <td>
+                <a class="btn btn-primary" href="{{url_for('viefilm',look=user.id_film)}}">просмотр</a>
+
+            </td>
+            <td>
+              
+
+
+                <!-- доступно только админу (id=1)-->
+                {% if current_user.is_authenticated and current_user.role_id==1 %}
+
+                <a class="btn btn-danger" href="{{url_for('film',del=user.id_film)}}">удалить</a>
+                
+                {% endif %}
+            </td>
+
+            <td>
+                <!-- доступно только админу и модератору-->
+                {% if current_user.is_authenticated and (current_user.role_id==2 or current_user.role_id==1) %}
+                <a class="btn btn-warning" href="{{url_for('editfilm',edit=user.id_film)}}">редактировать</a>
+                
+                {% endif %}
+            </td>
+
+
+        </tr>
+        {%endfor%}
+
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                {% if users.has_prev %}
+                  <li class="page-item"> <a class="page-link" href="{{ url_for('film', page=users.prev_num) }}">Назад</a></li>
+                {% else %}
+                  <li class="page-item"><a class="page-link btn disabled" href="#">Назад</a></li>
+                {% endif %}
+
+                {% for page in users.iter_pages(left_edge=2, right_edge=2) %}
+                {% if page %}
+            <li class="page-item"><a class="page-link" href="{{ url_for('film', page=page) }}">{{ page }}</a></li>
+                {% else %}
+            <li class="page-item disabled" id="example_ellipsis"><a href="#" class="page-link">….</a></li> 
+            {% endif %}
+            {% endfor %}
+
+
+                {% if users.has_next %}
+                  <li class="page-item"> <a class="page-link" href="{{ url_for('film', page=users.next_num) }}">Вперед</a></li>
+                {% else %}
+                  <li class="page-item"><a class="page-link btn disabled" href="#">Вперед</a></li>
+                {% endif %}
+
+            </ul>
+    </tbody>
+    
+</table>  
+
+<!-- доступно только админу (id=1)-->
+{% if current_user.is_authenticated and current_user.role_id==1 %} 
+
+<a class="btn btn-primary" href="{{url_for('addfilm')}}">добавить фильм</a>
+
+<!-- скрипт запуска модального окна по флагу modal-->
+  {% if not modal %}
+  <script type="text/javascript">
+    $(window).on('load', function() {
+$('#exampleModal').modal('show')});        
+</script>
+{% endif %}
+
+
+{% endif %}
+
+    
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}

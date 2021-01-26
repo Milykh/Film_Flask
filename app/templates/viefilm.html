@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+
+<h3 class="my-5">фильм</h3>
+
+
+
+  <div class="container">
+    <div class="row">
+      
+      <div class="col">
+        <img src="{{url_for('static',filename=Foto_pos)}}"width="50%">
+
+
+      </div>
+      <div class="col">
+        <div class="container">
+         
+                     
+          <table class="table">
+            <thead>
+              <tr>
+                
+                
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>название фильма</td>
+                <td>{{film.name_film}}</td>
+                
+              </tr>
+              <tr>
+                <td>описание фильма</td>
+                <td>{{film.descript_film}}</td>
+                
+              </tr>
+              <tr>
+                <td>год выпуска</td>
+                <td>{{film.year_film}}</td>
+               
+              </tr>
+              <tr>
+                <td>страна</td>
+                <td>{{film.country}}</td>
+               
+              </tr>
+              <tr>
+                <td>прдюссер</td>
+                <td>{{film.producer}}</td>
+               
+              </tr>
+              <tr>
+                <td>сценарист</td>
+                <td>{{film.s_writer}}</td>
+               
+              </tr>
+              <tr>
+                <td>актеры</td>
+                <td>{{film.actors}}</td>
+               
+              </tr>
+              <tr>
+                <td>продолжительность</td>
+                <td>{{film.duration}}</td>
+               
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+
+
+
+
+        
+
+
+      </div>
+      
+      
+    </div>
+  </div>
+
+  
+
+
+
+
+
+<!--писать рецензию может тот кто еще ее не писал и авторизирован на сайте admin mod user-->
+
+  {% if current_user.is_authenticated and  (current_user.role_id==2 or current_user.role_id==1 or current_user.role_id==3) and rev_flag %}
+
+<a class="btn btn-primary" href="{{url_for('addrev',rev=film.id_film)}}">добавить рецензию</a>
+
+{%endif%}
+
+<div class="d-flex ">
+          
+  
+
+<table class="table">
+  <thead>
+    <tr>
+    <th>оценка</th>
+    <th>Рецензия</th>
+    <th>Дата</th>
+    <th>   </th>
+  </tr>
+  </thead>
+  <tbody>
+    {%for re in rev%}<!-- перебираем все рецензии-->
+    <tr>
+      
+      {%if re.film_id==film.id_film  %}<!-- отображаем рецензию только на текущий фильм-->
+                                                              
+
+      {%if re.userexam_id==current_user.id or current_user.role_id==2 %}<!-- и рецензии текущего пользователя и модератора-->
+
+      <td>{{re.mark}}</td>
+      <td>{{re.text_r}}</td>
+      <td>{{re.data_r}}</td>
+
+      <td>
+          <!-- модерировать может или модератор(current_user.role_id==2) или админ(current_user.role_id==1)-->
+        {% if current_user.is_authenticated and  (current_user.role_id==2 or current_user.role_id==1)%}
+        <a class="btn btn-danger" href="{{url_for('modrev',modr=re.id_rev)}}">модерировать</a>
+        {%endif%}
+      </td>
+
+      {%endif%}
+      {%endif%}
+
+
+      
+    </tr>
+    {%endfor%}
+    </tbody>
+
+  </table>
+</div>
+
+
+
+{% endblock %}
